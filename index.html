@@ -22,6 +22,10 @@ h2{font-size:15px;letter-spacing:.06em;text-transform:uppercase;color:var(--mu);
 .card.zero .q{color:var(--rd)}.top{padding-right:16px}
 .out{background:var(--rd);color:#fff;font-size:12px;font-weight:700;padding:3px 9px;border-radius:99px;white-space:nowrap}
 .shop{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:10px 14px;margin-bottom:8px}
+.xb{width:54px;height:54px;border-radius:50%;border:2px solid var(--rd);background:none;color:var(--rd);font-size:22px;cursor:pointer;flex:none}
+.xb.on{background:var(--rd);color:#fff}
+.shop.off .em,.shop.off .nm{opacity:.4}.shop.off{background:transparent;border-style:dashed}
+.chk.all{border-color:var(--ok);color:var(--ok);width:54px;height:54px;border-radius:50%;font-size:28px}
 .pr{min-width:78px;text-align:right;color:var(--mu);font-weight:600}
 .shop .nm{font-weight:600;flex:1}.bq{min-width:110px;text-align:center;font-size:19px}
 .shop .chk{border-color:var(--ok);color:var(--ok);width:54px;height:54px;border-radius:50%;font-size:28px}
@@ -58,10 +62,10 @@ input[type=text]{flex:1;min-width:140px}input[type=number]{width:90px}
 .empty{color:var(--mu);padding:20px 0}
 </style></head><body>
 <header><h1>🏠 Το σπίτι μας</h1>
-<div class="tabs"><button class="tab" data-t="food">🥫 Υλικά</button><button class="tab" data-t="sweet">🍫 Γλυκά</button><button class="tab" data-t="rec">🍽️ Συνταγές</button><button class="tab" data-t="water">🌱 Πότισμα</button><button class="tab" data-t="notes">📝 Σημειώσεις</button><button class="tab" id="tshop" data-t="shop">🛒 Λίστα Super</button></div></header>
+<div class="tabs"><button class="tab" data-t="food">🥫 Υλικά</button><button class="tab" data-t="sweet">🍫 Γλυκά</button><button class="tab" data-t="drinks">🍷 Ποτά</button><button class="tab" data-t="rec">🍽️ Συνταγές</button><button class="tab" data-t="water">🌱 Πότισμα</button><button class="tab" data-t="notes">📝 Σημειώσεις</button><button class="tab" id="tshop" data-t="shop">🛒 Λίστα Super</button></div></header>
 <main id="m"></main>
 <script>
-const G={a:"Όσπρια, ρύζι & ζυμαρικά",b:"Κρέας",c:"Λαχανικά",d:"Γαλακτοκομικά & αυγά",e:"Σάλτσες",f:"Μπαχαρικά & λάδι",z:"Άλλα"};
+const G={a:"Όσπρια, ρύζι & ζυμαρικά",b:"Κρέας",c:"Λαχανικά",d:"Γαλακτοκομικά & αυγά",e:"Σάλτσες",f:"Μπαχαρικά & βασικά",z:"Άλλα"};
 const DEF=[
 {id:"fakes",n:"Φακές",e:"🫘",u:"γρ.",q:500,g:"a"},{id:"fasolia",n:"Φασόλια",e:"🫘",u:"γρ.",q:500,g:"a"},
 {id:"ryzi",n:"Ρύζι",e:"🍚",u:"γρ.",q:1000,g:"a"},{id:"makaronia",n:"Μακαρόνια",e:"🍝",u:"γρ.",q:500,g:"a"},
@@ -73,30 +77,34 @@ const DEF=[
 {id:"giaourti",n:"Γιαούρτι",e:"🥛",u:"γρ.",q:400,g:"d"},{id:"avga",n:"Αυγά",e:"🥚",u:"τεμ.",q:6,g:"d"},
 {id:"mayo",n:"Μαγιονέζα",e:"🫙",u:"κ.σ.",q:30,pk:30,g:"e"},{id:"ketsap",n:"Κέτσαπ",e:"🍅",u:"κ.σ.",q:30,pk:30,g:"e"},
 {id:"moustarda",n:"Μουστάρδα",e:"🟡",u:"κ.σ.",q:30,pk:30,g:"e"},
-{id:"ladi",n:"Ελαιόλαδο",e:"🫒",u:"κ.σ.",q:20,g:"f"},{id:"skonhs",n:"Σκόνη σκόρδου",e:"🧂",u:"τεμ.",q:1,g:"f"},
+{id:"skonhs",n:"Σκόνη σκόρδου",e:"🧂",u:"τεμ.",q:1,g:"f"},
 {id:"kymino",n:"Κύμινο",e:"🌿",u:"κ.γ.",q:10,g:"f"},{id:"dafni",n:"Φύλλα δάφνης",e:"🍃",u:"φύλλα",q:10,g:"f"},
 {id:"kyvos",n:"Κύβος λαχανικών",e:"🧊",u:"τεμ.",q:3,g:"f"},{id:"alati",n:"Αλάτι",e:"🧂",u:"τεμ.",q:1,g:"f"},
 {id:"sokofreta",n:"Σοκοφρέτα",e:"🍫",u:"τεμ.",q:0,g:"s"},{id:"bueno",n:"Bueno",e:"🍫",u:"τεμ.",q:0,g:"s"},
 {id:"sokolata",n:"Σοκολάτα",e:"🍫",u:"τεμ.",q:0,g:"s"},{id:"kroisan",n:"Κρουασάν",e:"🥐",u:"τεμ.",q:0,g:"s"},
+{id:"krasi",n:"Κρασί",e:"🍷",u:"μπουκάλια",q:1,g:"p"},{id:"malag",n:"Μαλαγουζιά",e:"🍾",u:"μπουκάλια",q:1,g:"p"},
+{id:"lefko",n:"Λευκό",e:"🥂",u:"μπουκάλια",q:1,g:"p"},{id:"coke",n:"Coca Cola",e:"🥤",u:"μπουκάλια",q:2,g:"p"},
+{id:"gin",n:"Τζιν",e:"🍸",u:"μπουκάλια",q:1,g:"p"},{id:"whisky",n:"Ουίσκι",e:"🥃",u:"μπουκάλια",q:1,g:"p"},
 ];
 // Ποσότητα 0 = αρκεί να υπάρχει στο σπίτι (δεν αφαιρείται)
 const REC=[
-{n:"Φακές",i:[["fakes",250],["ladi",2],["kremmydi",1],["karota",2],["skordo",2],["dafni",2],["kymino",1],["ntomata",400],["kyvos",1],["alati",0]],h:"Σοτάρεις κρεμμύδι, καρότο, σκόρδο. Ρίχνεις φακές, ντομάτα, κύβο, δάφνη, κύμινο και 1,5 λίτρο νερό. Βράζεις ~40 λεπτά."},
-{n:"Μακαρόνια με κιμά",i:[["kimas",450],["makaronia",500],["kremmydi",1],["skordo",2],["ntomata",400],["ladi",2],["alati",0]],h:"Σοτάρεις κρεμμύδι, σκόρδο και κιμά, ρίχνεις ντομάτα και σιγοβράζεις 25'. Σερβίρεις πάνω στα βρασμένα μακαρόνια."},
+{n:"Φακές",i:[["fakes",250],["kremmydi",1],["karota",2],["skordo",2],["dafni",2],["kymino",1],["ntomata",400],["kyvos",1],["alati",0]],h:"Σοτάρεις κρεμμύδι, καρότο, σκόρδο. Ρίχνεις φακές, ντομάτα, κύβο, δάφνη, κύμινο και 1,5 λίτρο νερό. Βράζεις ~40 λεπτά."},
+{n:"Μακαρόνια με κιμά",i:[["kimas",450],["makaronia",500],["kremmydi",1],["skordo",2],["ntomata",400],["alati",0]],h:"Σοτάρεις κρεμμύδι, σκόρδο και κιμά, ρίχνεις ντομάτα και σιγοβράζεις 25'. Σερβίρεις πάνω στα βρασμένα μακαρόνια."},
 {n:"Σνίτσελ με ρύζι & σάλτσα γιαουρτιού",i:[["snitsel",4],["ryzi",200],["giaourti",150],["skonhs",0],["moustarda",0]],h:"Τηγανίζεις ή ψήνεις τα σνίτσελ, βράζεις το ρύζι. Σάλτσα: γιαούρτι + σκόνη σκόρδου + λίγη μουστάρδα."},
 {n:"Σουβλάκια κοτόπουλο με ρύζι",i:[["souvlakia",4],["ryzi",200],["giaourti",100],["skonhs",0],["ketsap",0]],h:"Ψήνεις τα σουβλάκια, σερβίρεις με ρύζι και σάλτσα γιαουρτιού με σκόνη σκόρδου. Κέτσαπ για τα παιδιά."},
-{n:"Φασολάκια λαδερά",i:[["fasolakia",500],["kremmydi",1],["skordo",2],["ntomata",400],["ladi",4],["alati",0]],h:"Σοτάρεις κρεμμύδι και σκόρδο, προσθέτεις φασολάκια, ντομάτα και λίγο νερό. Σιγοβράζεις ~40 λεπτά."},
-{n:"Φασόλια σούπα",i:[["fasolia",250],["karota",2],["kremmydi",1],["skordo",2],["ntomata",400],["dafni",2],["ladi",3],["alati",0]],h:"Μουλιάζεις τα φασόλια από το βράδυ. Βράζεις με λαχανικά, ντομάτα, δάφνη και λάδι ~1 ώρα."},
-{n:"Ρύζι με αυγό",i:[["ryzi",200],["avga",2],["ladi",1],["skonhs",0],["ketsap",0]],h:"Βράζεις το ρύζι, τηγανίζεις τα αυγά και σερβίρεις με λίγη σκόνη σκόρδου και κέτσαπ."}];
+{n:"Φασολάκια λαδερά",i:[["fasolakia",500],["kremmydi",1],["skordo",2],["ntomata",400],["alati",0]],h:"Σοτάρεις κρεμμύδι και σκόρδο, προσθέτεις φασολάκια, ντομάτα και λίγο νερό. Σιγοβράζεις ~40 λεπτά."},
+{n:"Φασόλια σούπα",i:[["fasolia",250],["karota",2],["kremmydi",1],["skordo",2],["ntomata",400],["dafni",2],["alati",0]],h:"Μουλιάζεις τα φασόλια από το βράδυ. Βράζεις με λαχανικά, ντομάτα, δάφνη ~1 ώρα."},
+{n:"Ρύζι με αυγό",i:[["ryzi",200],["avga",2],["skonhs",0],["ketsap",0]],h:"Βράζεις το ρύζι, τηγανίζεις τα αυγά και σερβίρεις με λίγη σκόνη σκόρδου και κέτσαπ."}];
 let inv;try{inv=JSON.parse(localStorage.getItem("spiti2"))}catch(e){}
 if(!Array.isArray(inv))inv=DEF;
 let ver=0;try{ver=+localStorage.getItem("spiti2ver")||0}catch(e){}
 if(ver<4){DEF.forEach(d=>{const x=inv.find(i=>i.id===d.id);if(!x){if(d.id==="peltes")inv.push({...d})}else{if(d.id==="ntomata")x.n="Pumaro";if(d.pk){if(x.u==="τεμ.")x.q=x.q*d.pk;x.u=d.u;x.pk=d.pk}}});
 try{localStorage.setItem("spiti2",JSON.stringify(inv));localStorage.setItem("spiti2ver","4")}catch(e){}}
+if(ver<6){DEF.filter(d=>d.g==="p").forEach(d=>{if(!inv.find(i=>i.id===d.id))inv.push({...d})});try{localStorage.setItem("spiti2",JSON.stringify(inv));localStorage.setItem("spiti2ver","6")}catch(e){}}
 // Κατά προσέγγιση τιμές (€/κιλό για γρ., αλλιώς €/τεμάχιο ή €/συσκευασία)
 const PR={fakes:[4],fasolia:[3.5],ryzi:[3],makaronia:[2.2],kimas:[16],snitsel:[1.2],souvlakia:[0.9],fasolakia:[4.5],kremmydi:[0.25],karota:[0.15],skordo:[0.05],ntomata:[3.2],peltes:[1],giaourti:[4],avga:[0.4],
-mayo:[2.8,30,"δοχείο","δοχεία"],ketsap:[2.3,30,"δοχείο","δοχεία"],moustarda:[1.8,30,"δοχείο","δοχεία"],ladi:[8.5,67,"φιάλη","φιάλες"],skonhs:[1.5],kymino:[1.6,40,"βαζάκι","βαζάκια"],dafni:[1.2,20,"σακουλάκι","σακουλάκια"],kyvos:[0.3],alati:[0.6],sokofreta:[0.6],bueno:[1.3],sokolata:[1.6],kroisan:[0.9]};
-inv=inv.filter(x=>x.id!=="keik");
+mayo:[2.8,30,"δοχείο","δοχεία"],ketsap:[2.3,30,"δοχείο","δοχεία"],moustarda:[1.8,30,"δοχείο","δοχεία"],krasi:[6],malag:[7.5],lefko:[6],coke:[2],gin:[17],whisky:[22],skonhs:[1.5],kymino:[1.6,40,"βαζάκι","βαζάκια"],dafni:[1.2,20,"σακουλάκι","σακουλάκια"],kyvos:[0.3],alati:[0.6],sokofreta:[0.6],bueno:[1.3],sokolata:[1.6],kroisan:[0.9]};
+inv=inv.filter(x=>x.id!=="keik"&&x.id!=="ladi");
 inv.forEach(x=>{const p=PR[x.id];if(p){x.pr=p[0];if(p[1]){x.pk=p[1];x.pu=p[2];x.pp=p[3]}}});
 let tab="food";try{tab=localStorage.getItem("spiti2tab")||"food"}catch(e){}
 const save=()=>{try{localStorage.setItem("spiti2",JSON.stringify(inv))}catch(e){}};
@@ -112,10 +120,19 @@ const bstep=x=>x.pk?1:step(x.u);
 const bget=x=>buy[x.id]??(x.pk?1:(x.u==="γρ."?500:1));
 function bset(id,d){const x=get(id);buy[id]=Math.max(bstep(x),fmt(bget(x)+d));draw()}
 function bought(id){const x=get(id);const n=bget(x);x.q=fmt(x.q+(x.pk?n*x.pk:n));delete buy[id];save();draw()}
+let skip=[];try{skip=JSON.parse(localStorage.getItem("spiti2skip"))||[]}catch(e){}
+function tskip(id){skip=skip.includes(id)?skip.filter(x=>x!==id):[...skip,id];sv("spiti2skip",skip);draw()}
+function boughtAll(){if(!confirm("Να σημειωθούν όλα ως αγορασμένα;"))return;inv.filter(x=>x.q<=0&&!skip.includes(x.id)).forEach(x=>{const n=bget(x);x.q=fmt(x.q+(x.pk?n*x.pk:n));delete buy[x.id]});save();draw()}
 function shopView(){
-const miss=inv.filter(x=>x.q<=0);const tot=miss.reduce((a,x)=>a+(cost(x)||0),0);
-const sec=(t,l)=>l.length?`<h2>${t}</h2>`+l.map(x=>`<div class="shop"><span class="em">${x.e||'📦'}</span><span class="nm">${esc(x.n)}</span><button class="b" onclick="bset('${x.id}',-${bstep(x)})">−</button><b class="bq">${pl(x,bget(x))}</b><button class="b p" onclick="bset('${x.id}',${bstep(x)})">+</button><span class="pr">${cs(x)}</span><button class="chk" title="Αγόρασα" onclick="bought('${x.id}')">✓</button></div>`).join(""):"";
-return `<h2>Λίστα Super</h2>`+(miss.length?`<p class="how" style="margin:0 0 6px">Διάλεξε πόσο θα πάρεις και πάτα ✓ όταν το αγοράσεις· θα μπει στα υλικά.</p>`:`<div class="empty">Δεν λείπει τίποτα 🎉</div>`)+sec("Υλικά",miss.filter(x=>x.g!=="s"))+sec("Γλυκά",miss.filter(x=>x.g==="s"))+(miss.length?`<div class="rc rh" style="margin-top:12px"><b>Σύνολο περίπου</b><b style="color:var(--ac);font-size:24px">${eur(tot)}</b></div><p class="how">Οι τιμές είναι κατά προσέγγιση μέσοι όροι σούπερ μάρκετ και διαφέρουν ανά κατάστημα.</p>`:"")}
+skip=skip.filter(id=>{const x=get(id);return x&&x.q<=0});
+const miss=inv.filter(x=>x.q<=0),act=miss.filter(x=>!skip.includes(x.id)),sk=miss.filter(x=>skip.includes(x.id));
+const tot=act.reduce((a,x)=>a+(cost(x)||0),0);
+const sec=(t,l)=>l.length?`<h2>${t}</h2>`+l.map(x=>`<div class="shop"><span class="em">${x.e||'📦'}</span><span class="nm">${esc(x.n)}</span><button class="b" onclick="bset('${x.id}',-${bstep(x)})">−</button><b class="bq">${pl(x,bget(x))}</b><button class="b p" onclick="bset('${x.id}',${bstep(x)})">+</button><span class="pr">${cs(x)}</span><button class="xb" title="Αγνόηση για αυτή τη φορά" onclick="tskip('${x.id}')">✕</button><button class="chk" title="Αγόρασα" onclick="bought('${x.id}')">✓</button></div>`).join(""):"";
+const off=x=>`<div class="shop off"><span class="em">${x.e||'📦'}</span><span class="nm">${esc(x.n)}</span><button class="xb on" title="Επαναφορά στη λίστα" onclick="tskip('${x.id}')">✕</button></div>`;
+return `<h2>Λίστα Super</h2>`+(act.length?`<p class="how" style="margin:0 0 6px">Διάλεξε πόσο θα πάρεις και πάτα ✓ όταν το αγοράσεις. Με το ✕ το αγνοείς για αυτή τη φορά.</p>`:miss.length?`<div class="empty">Όλα τα υπόλοιπα έχουν αγνοηθεί.</div>`:`<div class="empty">Δεν λείπει τίποτα 🎉</div>`)
++sec("Υλικά",act.filter(x=>x.g!=="s"&&x.g!=="p"))+sec("Γλυκά",act.filter(x=>x.g==="s"))+sec("Ποτά",act.filter(x=>x.g==="p"))
++(act.length?`<div class="rc rh" style="margin-top:12px"><b>Σύνολο περίπου</b><b style="color:var(--ac);font-size:24px;text-align:right">${eur(tot)}</b><button class="chk all" title="Αγόρασα όλα" onclick="boughtAll()">✓</button></div><p class="how">Οι τιμές είναι κατά προσέγγιση μέσοι όροι και διαφέρουν ανά κατάστημα.</p>`:"")
++(sk.length?`<h2>Αγνοημένα (για άλλη φορά)</h2>`+sk.map(off).join(""):"")}
 const MN=["Ιανουάριος","Φεβρουάριος","Μάρτιος","Απρίλιος","Μάιος","Ιούνιος","Ιούλιος","Αύγουστος","Σεπτέμβριος","Οκτώβριος","Νοέμβριος","Δεκέμβριος"];
 let water=[],notes=[],mo=0;
 try{water=JSON.parse(localStorage.getItem("spiti2water"))||[]}catch(e){}
@@ -153,17 +170,17 @@ document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>setTab(b.dataset.t));
 const card=x=>`<div class="card ${x.q<=0?'zero':''}"><button class="x" onclick="del('${x.id}')">✕</button>
 <div class="top"><span class="em">${x.e||'📦'}</span><span class="nm">${x.n}</span>${x.q<=0?'<span class="out">ΤΕΛΕΙΩΣΕ</span>':''}</div>
 <div class="ctl"><button class="b" onclick="adj('${x.id}',-${step(x.u)})">−</button><span class="q">${x.q} <small>${x.u}</small></span><button class="b p" onclick="adj('${x.id}',${step(x.u)})">+</button></div></div>`;
-function addForm(s){return`<form class="add" onsubmit="return add(event,'${s}')"><input type="text" id="nm" placeholder="Νέο ${s==='s'?'γλυκό':'υλικό'}" required>
+function addForm(s){return`<form class="add" onsubmit="return add(event,'${s}')"><input type="text" id="nm" placeholder="Νέο ${s==='s'?'γλυκό':s==='p'?'ποτό':'υλικό'}" required>
 <input type="number" id="qt" min="0" value="1" step="any"><select id="un"><option>τεμ.</option><option>γρ.</option><option>κ.σ.</option><option>κ.γ.</option><option>σκ.</option><option>λίτρα</option></select><button>Προσθήκη</button></form>`}
 function add(e,g){e.preventDefault();const n=$("#nm").value.trim();if(!n)return false;
-inv.push({id:"u"+Date.now(),n,e:g==='s'?'🍬':'📦',u:$("#un").value,q:parseFloat($("#qt").value)||0,g:g==='s'?'s':'z'});save();draw();return false}
+inv.push({id:"u"+Date.now(),n,e:({s:'🍬',p:'🥤'})[g]||'📦',u:$("#un").value,q:parseFloat($("#qt").value)||0,g:(g==='s'||g==='p')?g:'z'});save();draw();return false}
 function draw(){
 document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("on",b.dataset.t===tab));
-let h="";const nm0=inv.filter(x=>x.q<=0).length;$("#tshop").textContent="🛒 Λίστα Super"+(nm0?" ("+nm0+")":"");
+let h="";const nm0=inv.filter(x=>x.q<=0&&!skip.includes(x.id)).length;$("#tshop").textContent="🛒 Λίστα Super"+(nm0?" ("+nm0+")":"");
 if(tab==="food"){
 h=Object.keys(G).map(g=>{const l=inv.filter(x=>x.g===g);return l.length?`<h2>${G[g]}</h2><div class="grid">${l.map(card).join("")}</div>`:""}).join("")+addForm("z")}
 else if(tab==="sweet"){const l=inv.filter(x=>x.g==="s");h=`<h2>Γλυκά στο σπίτι</h2><div class="grid">${l.map(card).join("")}</div>`+addForm("s")}
-else if(tab==="shop"){h=shopView()}else if(tab==="water"){h=waterView()}else if(tab==="notes"){h=notesView()}else{
+else if(tab==="drinks"){const l=inv.filter(x=>x.g==="p");h=`<h2>Ποτά & αναψυκτικά</h2><div class="grid">${l.map(card).join("")}</div>`+addForm("p")}else if(tab==="shop"){h=shopView()}else if(tab==="water"){h=waterView()}else if(tab==="notes"){h=notesView()}else{
 const st=REC.map((r,k)=>({r,k,miss:r.i.filter(([id,a])=>{const x=get(id);return !x||x.q<=0||x.q<a}).length})).sort((a,b)=>a.miss-b.miss);
 h=`<h2>Προτάσεις με ό,τι έχουμε</h2>`+st.map(({r,k,miss})=>`<div class="rc ${miss?'':'ok'}"><div class="rh"><b>${r.n}</b><span class="tag">${miss?`λείπουν ${miss} υλικά`:'✓ Έτοιμη!'}</span></div>
 <div class="chips">${r.i.map(([id,a])=>{const x=get(id);const ok=x&&x.q>0&&x.q>=a;return`<span class="chip ${ok?'':'m'}">${a?a+' '+x.u+' ':''}${x?x.n:id}</span>`}).join("")}</div>
