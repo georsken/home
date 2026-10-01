@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="el"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Το σπίτι μας</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f6f3ee;--card:#fff;--tx:#25221e;--mu:#8b857b;--ac:#d4552b;--acs:#fbe6dd;--ok:#2d8050;--oks:#e0f2e7;--bd:#e9e3d9}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#171513;--card:#232019;--tx:#f2ede4;--mu:#a09886;--ac:#ee7a4f;--acs:#3a241a;--ok:#5fc08a;--oks:#1b2e22;--bd:#37322a}}
+:root[data-theme="dark"]{--bg:#171513;--card:#232019;--tx:#f2ede4;--mu:#a09886;--ac:#ee7a4f;--acs:#3a241a;--ok:#5fc08a;--oks:#1b2e22;--bd:#37322a}
+*{box-sizing:border-box}
+html,body{margin:0}body{background:var(--bg);color:var(--tx);font:18px/1.4 system-ui,-apple-system,sans-serif}
+header{position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);padding:14px 20px 10px;z-index:5}
+h1{margin:0 0 12px;font-size:26px}
+.tabs{display:flex;gap:8px;max-width:1000px}
+.tab{flex:1;padding:14px 8px;border-radius:14px;background:var(--card);border:1px solid var(--bd);color:var(--tx);font:600 18px system-ui;cursor:pointer}
+.tab.on{background:var(--ac);border-color:var(--ac);color:#fff}
+main{padding:6px 20px 40px;max-width:1000px}
+h2{font-size:15px;letter-spacing:.06em;text-transform:uppercase;color:var(--mu);margin:22px 0 10px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:10px;position:relative}
+.card.zero{opacity:.55}
+.top{display:flex;align-items:center;gap:10px}.em{font-size:30px}.nm{font-weight:600;flex:1;line-height:1.2}
+.ctl{display:flex;align-items:center;justify-content:space-between}
+.q{font-size:22px;font-weight:700}.q small{font-size:14px;color:var(--mu);font-weight:500}
+.b{width:54px;height:54px;border-radius:50%;border:0;font-size:30px;line-height:1;cursor:pointer;background:var(--acs);color:var(--ac);font-weight:600}
+.b.p{background:var(--ac);color:#fff}
+.x{position:absolute;top:6px;right:8px;background:none;border:0;color:var(--mu);font-size:15px;cursor:pointer;opacity:.6}
+.add{display:flex;gap:8px;flex-wrap:wrap;margin-top:24px;padding:14px;background:var(--card);border:1px dashed var(--bd);border-radius:18px}
+input,select{font:inherit;padding:12px;border-radius:12px;border:1px solid var(--bd);background:var(--bg);color:var(--tx)}
+input[type=text]{flex:1;min-width:140px}input[type=number]{width:90px}
+.add button{padding:12px 20px;border:0;border-radius:12px;background:var(--ac);color:#fff;font:600 18px system-ui;cursor:pointer}
+.rc{background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:16px;margin-bottom:12px}
+.rc.ok{border:2px solid var(--ok)}
+.rh{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.rh b{font-size:20px;flex:1}
+.tag{font-size:14px;font-weight:600;padding:4px 12px;border-radius:99px;background:var(--acs);color:var(--ac)}
+.ok .tag{background:var(--oks);color:var(--ok)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}
+.chip{font-size:15px;padding:5px 12px;border-radius:99px;background:var(--oks);color:var(--ok)}
+.chip.m{background:var(--acs);color:var(--ac)}
+.how{color:var(--mu);font-size:16px;margin:6px 0 0}
+.go{margin-top:12px;padding:12px 20px;border:0;border-radius:12px;background:var(--ok);color:#fff;font:600 17px system-ui;cursor:pointer}
+.empty{color:var(--mu);padding:20px 0}
+</style></head><body>
+<header><h1>🏠 Το σπίτι μας</h1>
+<div class="tabs"><button class="tab" data-t="food">🥫 Υλικά</button><button class="tab" data-t="sweet">🍫 Γλυκά</button><button class="tab" data-t="rec">🍽️ Συνταγές</button></div></header>
+<main id="m"></main>
+<script>
+const G={a:"Όσπρια, ρύζι & ζυμαρικά",b:"Κρέας",c:"Λαχανικά",d:"Γαλακτοκομικά & αυγά",e:"Σάλτσες",f:"Μπαχαρικά & λάδι",z:"Άλλα"};
+const DEF=[
+{id:"fakes",n:"Φακές",e:"🫘",u:"γρ.",q:500,g:"a"},{id:"fasolia",n:"Φασόλια",e:"🫘",u:"γρ.",q:500,g:"a"},
+{id:"ryzi",n:"Ρύζι",e:"🍚",u:"γρ.",q:1000,g:"a"},{id:"makaronia",n:"Μακαρόνια",e:"🍝",u:"γρ.",q:500,g:"a"},
+{id:"kimas",n:"Κιμάς μοσχαρίσιος",e:"🥩",u:"γρ.",q:0,g:"b"},{id:"snitsel",n:"Σνίτσελ",e:"🍗",u:"τεμ.",q:4,g:"b"},
+{id:"souvlakia",n:"Σουβλάκια κοτόπουλο",e:"🍢",u:"τεμ.",q:4,g:"b"},
+{id:"fasolakia",n:"Φασολάκια",e:"🫛",u:"γρ.",q:500,g:"c"},{id:"kremmydi",n:"Κρεμμύδι",e:"🧅",u:"τεμ.",q:3,g:"c"},
+{id:"karota",n:"Καρότα",e:"🥕",u:"τεμ.",q:4,g:"c"},{id:"skordo",n:"Σκόρδο",e:"🧄",u:"σκ.",q:6,g:"c"},
+{id:"ntomata",n:"Ντομάτα κονκασέ",e:"🥫",u:"γρ.",q:800,g:"c"},
+{id:"giaourti",n:"Γιαούρτι",e:"🥛",u:"γρ.",q:400,g:"d"},{id:"avga",n:"Αυγά",e:"🥚",u:"τεμ.",q:6,g:"d"},
+{id:"mayo",n:"Μαγιονέζα",e:"🫙",u:"τεμ.",q:1,g:"e"},{id:"ketsap",n:"Κέτσαπ",e:"🍅",u:"τεμ.",q:1,g:"e"},
+{id:"moustarda",n:"Μουστάρδα",e:"🟡",u:"τεμ.",q:1,g:"e"},
+{id:"ladi",n:"Ελαιόλαδο",e:"🫒",u:"κ.σ.",q:20,g:"f"},{id:"skonhs",n:"Σκόνη σκόρδου",e:"🧂",u:"τεμ.",q:1,g:"f"},
+{id:"kymino",n:"Κύμινο",e:"🌿",u:"κ.γ.",q:10,g:"f"},{id:"dafni",n:"Φύλλα δάφνης",e:"🍃",u:"φύλλα",q:10,g:"f"},
+{id:"kyvos",n:"Κύβος λαχανικών",e:"🧊",u:"τεμ.",q:3,g:"f"},{id:"alati",n:"Αλάτι",e:"🧂",u:"τεμ.",q:1,g:"f"},
+{id:"sokofreta",n:"Σοκοφρέτα",e:"🍫",u:"τεμ.",q:0,g:"s"},{id:"bueno",n:"Bueno",e:"🍫",u:"τεμ.",q:0,g:"s"},
+{id:"sokolata",n:"Σοκολάτα",e:"🍫",u:"τεμ.",q:0,g:"s"},{id:"kroisan",n:"Κρουασάν",e:"🥐",u:"τεμ.",q:0,g:"s"},
+{id:"keik",n:"Κέικ",e:"🍰",u:"τεμ.",q:0,g:"s"}];
+// Ποσότητα 0 = αρκεί να υπάρχει στο σπίτι (δεν αφαιρείται)
+const REC=[
+{n:"Φακές",i:[["fakes",250],["ladi",2],["kremmydi",1],["karota",2],["skordo",2],["dafni",2],["kymino",1],["ntomata",400],["kyvos",1],["alati",0]],h:"Σοτάρεις κρεμμύδι, καρότο, σκόρδο. Ρίχνεις φακές, ντομάτα, κύβο, δάφνη, κύμινο και 1,5 λίτρο νερό. Βράζεις ~40 λεπτά."},
+{n:"Μακαρόνια με κιμά",i:[["kimas",450],["makaronia",500],["kremmydi",1],["skordo",2],["ntomata",400],["ladi",2],["alati",0]],h:"Σοτάρεις κρεμμύδι, σκόρδο και κιμά, ρίχνεις ντομάτα και σιγοβράζεις 25'. Σερβίρεις πάνω στα βρασμένα μακαρόνια."},
+{n:"Σνίτσελ με ρύζι & σάλτσα γιαουρτιού",i:[["snitsel",4],["ryzi",200],["giaourti",150],["skonhs",0],["moustarda",0]],h:"Τηγανίζεις ή ψήνεις τα σνίτσελ, βράζεις το ρύζι. Σάλτσα: γιαούρτι + σκόνη σκόρδου + λίγη μουστάρδα."},
+{n:"Σουβλάκια κοτόπουλο με ρύζι",i:[["souvlakia",4],["ryzi",200],["giaourti",100],["skonhs",0],["ketsap",0]],h:"Ψήνεις τα σουβλάκια, σερβίρεις με ρύζι και σάλτσα γιαουρτιού με σκόνη σκόρδου. Κέτσαπ για τα παιδιά."},
+{n:"Φασολάκια λαδερά",i:[["fasolakia",500],["kremmydi",1],["skordo",2],["ntomata",400],["ladi",4],["alati",0]],h:"Σοτάρεις κρεμμύδι και σκόρδο, προσθέτεις φασολάκια, ντομάτα και λίγο νερό. Σιγοβράζεις ~40 λεπτά."},
+{n:"Φασόλια σούπα",i:[["fasolia",250],["karota",2],["kremmydi",1],["skordo",2],["ntomata",400],["dafni",2],["ladi",3],["alati",0]],h:"Μουλιάζεις τα φασόλια από το βράδυ. Βράζεις με λαχανικά, ντομάτα, δάφνη και λάδι ~1 ώρα."},
+{n:"Ρύζι με αυγό",i:[["ryzi",200],["avga",2],["ladi",1],["skonhs",0],["ketsap",0]],h:"Βράζεις το ρύζι, τηγανίζεις τα αυγά και σερβίρεις με λίγη σκόνη σκόρδου και κέτσαπ."}];
+let inv;try{inv=JSON.parse(localStorage.getItem("spiti2"))}catch(e){}
+if(!Array.isArray(inv))inv=DEF;
+let tab="food";try{tab=localStorage.getItem("spiti2tab")||"food"}catch(e){}
+const save=()=>{try{localStorage.setItem("spiti2",JSON.stringify(inv))}catch(e){}};
+const get=id=>inv.find(x=>x.id===id);
+const step=u=>u==="γρ."?50:1;
+const fmt=v=>Math.round(v*100)/100;
+const $=s=>document.querySelector(s);
+function adj(id,d){const x=get(id);x.q=Math.max(0,fmt(x.q+d));save();draw()}
+function del(id){if(confirm("Διαγραφή;")){inv=inv.filter(x=>x.id!==id);save();draw()}}
+function cook(k){REC[k].i.forEach(([id,a])=>{const x=get(id);if(x&&a)x.q=Math.max(0,fmt(x.q-a))});save();draw()}
+function setTab(t){tab=t;try{localStorage.setItem("spiti2tab",t)}catch(e){}draw()}
+document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>setTab(b.dataset.t));
+const card=x=>`<div class="card ${x.q<=0?'zero':''}"><button class="x" onclick="del('${x.id}')">✕</button>
+<div class="top"><span class="em">${x.e||'📦'}</span><span class="nm">${x.n}</span></div>
+<div class="ctl"><button class="b" onclick="adj('${x.id}',-${step(x.u)})">−</button><span class="q">${x.q} <small>${x.u}</small></span><button class="b p" onclick="adj('${x.id}',${step(x.u)})">+</button></div></div>`;
+function addForm(s){return`<form class="add" onsubmit="return add(event,'${s}')"><input type="text" id="nm" placeholder="Νέο ${s==='s'?'γλυκό':'υλικό'}" required>
+<input type="number" id="qt" min="0" value="1" step="any"><select id="un"><option>τεμ.</option><option>γρ.</option><option>κ.σ.</option><option>κ.γ.</option><option>σκ.</option><option>λίτρα</option></select><button>Προσθήκη</button></form>`}
+function add(e,g){e.preventDefault();const n=$("#nm").value.trim();if(!n)return false;
+inv.push({id:"u"+Date.now(),n,e:g==='s'?'🍬':'📦',u:$("#un").value,q:parseFloat($("#qt").value)||0,g:g==='s'?'s':'z'});save();draw();return false}
+function draw(){
+document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("on",b.dataset.t===tab));
+let h="";
+if(tab==="food"){
+h=Object.keys(G).map(g=>{const l=inv.filter(x=>x.g===g);return l.length?`<h2>${G[g]}</h2><div class="grid">${l.map(card).join("")}</div>`:""}).join("")+addForm("z")}
+else if(tab==="sweet"){const l=inv.filter(x=>x.g==="s");h=`<h2>Γλυκά στο σπίτι</h2><div class="grid">${l.map(card).join("")}</div>`+addForm("s")}
+else{
+const st=REC.map((r,k)=>({r,k,miss:r.i.filter(([id,a])=>{const x=get(id);return !x||x.q<=0||x.q<a}).length})).sort((a,b)=>a.miss-b.miss);
+h=`<h2>Προτάσεις με ό,τι έχουμε</h2>`+st.map(({r,k,miss})=>`<div class="rc ${miss?'':'ok'}"><div class="rh"><b>${r.n}</b><span class="tag">${miss?`λείπουν ${miss} υλικά`:'✓ Έτοιμη!'}</span></div>
+<div class="chips">${r.i.map(([id,a])=>{const x=get(id);const ok=x&&x.q>0&&x.q>=a;return`<span class="chip ${ok?'':'m'}">${a?a+' '+x.u+' ':''}${x?x.n:id}</span>`}).join("")}</div>
+<p class="how">${r.h}</p>${miss?'':`<button class="go" onclick="cook(${k})">Μαγείρεψα το! (αφαίρεση υλικών)</button>`}</div>`).join("")}
+$("#m").innerHTML=h}
+draw();
+</script></body></html>
