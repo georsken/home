@@ -11,7 +11,7 @@ html,body{margin:0}body{background:var(--bg);color:var(--tx);font:18px/1.4 syste
 header{position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);padding:14px 20px 10px;z-index:5}
 h1{margin:0 0 12px;font-size:26px}
 .tabs{display:flex;gap:8px;max-width:1000px}
-.tab{flex:1;padding:14px 8px;border-radius:14px;background:var(--card);border:1px solid var(--bd);color:var(--tx);font:600 18px system-ui;cursor:pointer}
+.tab{flex:1;padding:14px 8px;border-radius:14px;background:var(--card);border:1px solid var(--bd);color:var(--tx);font:600 16px system-ui;cursor:pointer}
 .tab.on{background:var(--ac);border-color:var(--ac);color:#fff}
 main{padding:6px 20px 40px;max-width:1000px}
 h2{font-size:15px;letter-spacing:.06em;text-transform:uppercase;color:var(--mu);margin:22px 0 10px}
@@ -38,10 +38,20 @@ input[type=text]{flex:1;min-width:140px}input[type=number]{width:90px}
 .chip.m{background:var(--acs);color:var(--ac)}
 .how{color:var(--mu);font-size:16px;margin:6px 0 0}
 .go{margin-top:12px;padding:12px 20px;border:0;border-radius:12px;background:var(--ok);color:#fff;font:600 17px system-ui;cursor:pointer}
+.cal-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;font-size:20px}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.dh{text-align:center;color:var(--mu);font-size:14px;font-weight:600}
+.day{aspect-ratio:1;max-height:80px;border-radius:14px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);font:600 18px system-ui;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.day.t{border:2px solid var(--ac)}.day.w{background:var(--oks);border-color:var(--ok);color:var(--ok)}.day span{font-size:16px;line-height:1}
+.note{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:12px 14px;margin-bottom:8px}
+.note span{flex:1;cursor:pointer}.note.d span{text-decoration:line-through;color:var(--mu)}
+.chk{width:40px;height:40px;border-radius:12px;border:2px solid var(--mu);background:none;color:#fff;font-size:22px;cursor:pointer;flex:none}
+.note.d .chk{background:var(--ok);border-color:var(--ok)}
+.x2{background:none;border:0;color:var(--mu);font-size:18px;cursor:pointer;padding:8px}
 .empty{color:var(--mu);padding:20px 0}
 </style></head><body>
 <header><h1>🏠 Το σπίτι μας</h1>
-<div class="tabs"><button class="tab" data-t="food">🥫 Υλικά</button><button class="tab" data-t="sweet">🍫 Γλυκά</button><button class="tab" data-t="rec">🍽️ Συνταγές</button></div></header>
+<div class="tabs"><button class="tab" data-t="food">🥫 Υλικά</button><button class="tab" data-t="sweet">🍫 Γλυκά</button><button class="tab" data-t="rec">🍽️ Συνταγές</button><button class="tab" data-t="water">🌱 Πότισμα</button><button class="tab" data-t="notes">📝 Σημειώσεις</button></div></header>
 <main id="m"></main>
 <script>
 const G={a:"Όσπρια, ρύζι & ζυμαρικά",b:"Κρέας",c:"Λαχανικά",d:"Γαλακτοκομικά & αυγά",e:"Σάλτσες",f:"Μπαχαρικά & λάδι",z:"Άλλα"};
@@ -78,6 +88,34 @@ const save=()=>{try{localStorage.setItem("spiti2",JSON.stringify(inv))}catch(e){
 const get=id=>inv.find(x=>x.id===id);
 const step=u=>u==="γρ."?50:1;
 const fmt=v=>Math.round(v*100)/100;
+const MN=["Ιανουάριος","Φεβρουάριος","Μάρτιος","Απρίλιος","Μάιος","Ιούνιος","Ιούλιος","Αύγουστος","Σεπτέμβριος","Οκτώβριος","Νοέμβριος","Δεκέμβριος"];
+let water=[],notes=[],mo=0;
+try{water=JSON.parse(localStorage.getItem("spiti2water"))||[]}catch(e){}
+try{notes=JSON.parse(localStorage.getItem("spiti2notes"))||[]}catch(e){}
+const sv=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+const esc=t=>t.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const dk=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+function tw(k){water=water.includes(k)?water.filter(x=>x!==k):[...water,k];sv("spiti2water",water);draw()}
+function mv(n){mo+=n;draw()}
+function waterView(){
+const now=new Date(),t=dk(now),b=new Date(now.getFullYear(),now.getMonth()+mo,1);
+const days=new Date(b.getFullYear(),b.getMonth()+1,0).getDate(),off=(b.getDay()+6)%7;
+const last=[...water].sort().pop();
+let info="Δεν έχεις σημειώσει πότισμα ακόμα";
+if(last){const [y,m,d]=last.split("-");const n=Math.round((new Date(now.getFullYear(),now.getMonth(),now.getDate())-new Date(+y,m-1,+d))/864e5);info=n===0?"Ποτίστηκε σήμερα ✓":n===1?"Τελευταίο πότισμα: χθες":n<0?"Τελευταίο πότισμα: σε "+(-n)+" μέρες":"Τελευταίο πότισμα: πριν "+n+" μέρες"}
+let c=["Δε","Τρ","Τε","Πε","Πα","Σα","Κυ"].map(x=>`<div class="dh">${x}</div>`).join("")+"<div></div>".repeat(off);
+for(let i=1;i<=days;i++){const k=dk(new Date(b.getFullYear(),b.getMonth(),i)),w=water.includes(k);c+=`<button class="day ${w?'w':''} ${k===t?'t':''}" onclick="tw('${k}')">${i}${w?'<span>💧</span>':''}</button>`}
+return `<h2>Πότισμα</h2><div class="rc"><div class="rh"><b>🌱 ${info}</b><button class="go" style="margin:0" onclick="tw('${t}')">${water.includes(t)?'Αναίρεση σημερινού':'💧 Πότισα σήμερα'}</button></div></div>
+<div class="rc"><div class="cal-h"><button class="b" onclick="mv(-1)">‹</button><b>${MN[b.getMonth()]} ${b.getFullYear()}</b><button class="b" onclick="mv(1)">›</button></div><div class="cal">${c}</div><p class="how">Πάτα μια μέρα για να τη σημειώσεις ή να την ξεσημειώσεις.</p></div>`}
+function nadd(e){e.preventDefault();const v=$("#ni").value.trim();if(v){notes.unshift({id:Date.now(),t:v,d:false});sv("spiti2notes",notes)}draw();return false}
+function nck(id){const n=notes.find(x=>x.id===id);n.d=!n.d;sv("spiti2notes",notes);draw()}
+function ndel(id){notes=notes.filter(x=>x.id!==id);sv("spiti2notes",notes);draw()}
+function nclr(){notes=notes.filter(x=>!x.d);sv("spiti2notes",notes);draw()}
+function notesView(){const open=notes.filter(x=>!x.d),done=notes.filter(x=>x.d);
+const row=x=>`<div class="note ${x.d?'d':''}"><button class="chk" onclick="nck(${x.id})">${x.d?'✓':''}</button><span onclick="nck(${x.id})">${esc(x.t)}</span><button class="x2" onclick="ndel(${x.id})">✕</button></div>`;
+return `<h2>Σημειωματάριο</h2><form class="add" onsubmit="return nadd(event)"><input type="text" id="ni" placeholder="Τι πρέπει να θυμηθούμε;" required><button>Προσθήκη</button></form>
+<div style="margin-top:14px">${open.map(row).join("")||'<div class="empty">Δεν υπάρχουν σημειώσεις.</div>'}</div>
+${done.length?`<h2>Ολοκληρωμένα</h2>${done.map(row).join("")}<button class="go" style="background:var(--mu)" onclick="nclr()">Καθαρισμός ολοκληρωμένων</button>`:""}`}
 const $=s=>document.querySelector(s);
 function adj(id,d){const x=get(id);x.q=Math.max(0,fmt(x.q+d));save();draw()}
 function del(id){if(confirm("Διαγραφή;")){inv=inv.filter(x=>x.id!==id);save();draw()}}
@@ -97,7 +135,7 @@ let h="";
 if(tab==="food"){
 h=Object.keys(G).map(g=>{const l=inv.filter(x=>x.g===g);return l.length?`<h2>${G[g]}</h2><div class="grid">${l.map(card).join("")}</div>`:""}).join("")+addForm("z")}
 else if(tab==="sweet"){const l=inv.filter(x=>x.g==="s");h=`<h2>Γλυκά στο σπίτι</h2><div class="grid">${l.map(card).join("")}</div>`+addForm("s")}
-else{
+else if(tab==="water"){h=waterView()}else if(tab==="notes"){h=notesView()}else{
 const st=REC.map((r,k)=>({r,k,miss:r.i.filter(([id,a])=>{const x=get(id);return !x||x.q<=0||x.q<a}).length})).sort((a,b)=>a.miss-b.miss);
 h=`<h2>Προτάσεις με ό,τι έχουμε</h2>`+st.map(({r,k,miss})=>`<div class="rc ${miss?'':'ok'}"><div class="rh"><b>${r.n}</b><span class="tag">${miss?`λείπουν ${miss} υλικά`:'✓ Έτοιμη!'}</span></div>
 <div class="chips">${r.i.map(([id,a])=>{const x=get(id);const ok=x&&x.q>0&&x.q>=a;return`<span class="chip ${ok?'':'m'}">${a?a+' '+x.u+' ':''}${x?x.n:id}</span>`}).join("")}</div>
